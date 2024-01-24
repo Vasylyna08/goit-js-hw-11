@@ -11,6 +11,9 @@ const formEl = document.querySelector('.form');
 const inputEl = document.querySelector('.input');
 const buttonEl = document.querySelector('.button');
 const galleryEl = document.querySelector('.gallery');
+const loaderEl = document.querySelector('.loader');
+
+loaderEl.style.display = 'none';
 
 function fetchImage(imageName) {
   return fetch(
@@ -27,6 +30,7 @@ formEl.addEventListener('submit', handleSearch);
 
 function handleSearch(event) {
   event.preventDefault();
+  loaderEl.style.display = 'block';
   const form = event.currentTarget;
   const query = form.elements.query.value;
   if (!query) {
@@ -36,6 +40,7 @@ function handleSearch(event) {
 
   fetchImage(query)
     .then(data => {
+      loaderEl.style.display = 'none';
       if (!data.hits.length) {
         onFetchError();
       }
@@ -76,7 +81,6 @@ function createMarkup(arr) {
     )
     .join('');
 }
-galleryEl.innerHTML = createMarkup(data.hits);
 
 function onFetchError(error) {
   iziToast.error({
