@@ -11,6 +11,8 @@ const formEl = document.querySelector('.form');
 const galleryEl = document.querySelector('.gallery');
 const loaderEl = document.querySelector('.loader');
 
+loaderEl.style.display = 'none';
+
 function fetchImage(imageName) {
   return fetch(
     `${BASE_URL}?key=${API_KEY}&q=${imageName}&image_type=photo&orientation=horizontal&safesearch=true`
@@ -26,6 +28,7 @@ formEl.addEventListener('submit', handleSearch);
 
 function handleSearch(event) {
   event.preventDefault();
+  loaderEl.style.display = 'block';
   const form = event.currentTarget;
   const query = form.elements.query.value;
   if (!query) {
@@ -33,10 +36,9 @@ function handleSearch(event) {
     return;
   }
 
-  removeLoader();
-
   fetchImage(query)
     .then(data => {
+      loaderEl.style.display = 'none';
       if (!data.hits.length) {
         onFetchError();
       }
@@ -49,7 +51,7 @@ function handleSearch(event) {
     })
     .catch(onFetchError)
     .finally(() => {
-      addLoader();
+      loaderEl.style.display = 'none';
       form.reset();
     });
 }
@@ -94,12 +96,4 @@ function onFetchError(error) {
     closeOnClick: true,
     progressBarEasing: 'linear',
   });
-}
-
-function removeLoader() {
-  loaderEl.classList.remove('is-hidden');
-}
-
-function addLoader() {
-  loaderEl.classList.add('is-hidden');
 }
