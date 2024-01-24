@@ -8,12 +8,8 @@ const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '41985459-07284690ed1bbc3dd300f203e';
 
 const formEl = document.querySelector('.form');
-const inputEl = document.querySelector('.input');
-const buttonEl = document.querySelector('.button');
 const galleryEl = document.querySelector('.gallery');
 const loaderEl = document.querySelector('.loader');
-
-loaderEl.style.display = 'none';
 
 function fetchImage(imageName) {
   return fetch(
@@ -30,7 +26,6 @@ formEl.addEventListener('submit', handleSearch);
 
 function handleSearch(event) {
   event.preventDefault();
-  loaderEl.style.display = 'block';
   const form = event.currentTarget;
   const query = form.elements.query.value;
   if (!query) {
@@ -38,9 +33,10 @@ function handleSearch(event) {
     return;
   }
 
+  removeLoader();
+
   fetchImage(query)
     .then(data => {
-      loaderEl.style.display = 'none';
       if (!data.hits.length) {
         onFetchError();
       }
@@ -52,7 +48,10 @@ function handleSearch(event) {
       refreshGallery.refresh();
     })
     .catch(onFetchError)
-    .finally(() => form.reset());
+    .finally(() => {
+      addLoader();
+      form.reset();
+    });
 }
 
 function createMarkup(arr) {
@@ -95,4 +94,12 @@ function onFetchError(error) {
     closeOnClick: true,
     progressBarEasing: 'linear',
   });
+}
+
+function removeLoader() {
+  loaderEl.classList.remove('is-hidden');
+}
+
+function addLoader() {
+  loaderEl.classList.add('is-hidden');
 }
