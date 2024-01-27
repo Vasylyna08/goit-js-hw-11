@@ -51,7 +51,6 @@ function handleSearch(event) {
     })
     .catch(onFetchError)
     .finally(() => {
-      loaderEl.style.display = 'none';
       form.reset();
     });
 }
